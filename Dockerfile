@@ -73,6 +73,8 @@ COPY ./rastervision_examples/rastervision/examples/ /opt/src/rastervision/exampl
 COPY scripts /opt/src/scripts/
 COPY tests /opt/src/tests/
 COPY integration_tests /opt/src/integration_tests/
+COPY .flake8 /opt/src/.flake8
+COPY .coveragerc /opt/src/.coveragerc
 
 # Needed for click to work
 ENV LC_ALL C.UTF-8
