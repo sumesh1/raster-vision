@@ -3,6 +3,9 @@ sudo: required
 language:
    - python
 
+install:
+   - echo "skipping install step"
+
 services:
    - docker
 
