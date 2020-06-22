@@ -75,6 +75,7 @@ COPY ./rastervision_pytorch_backend/rastervision/pytorch_backend/ /opt/src/raste
 COPY ./rastervision_examples/rastervision/examples/ /opt/src/rastervision/examples/
 
 COPY scripts /opt/src/scripts/
+COPY scripts/rastervision /usr/local/bin/rastervision
 COPY tests /opt/src/tests/
 COPY integration_tests /opt/src/integration_tests/
 COPY .flake8 /opt/src/.flake8
