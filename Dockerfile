@@ -61,6 +61,10 @@ COPY ./rastervision_examples/requirements.txt /opt/src/requirements.txt
 # Commented out because there are no dependencies after filtering out rastervision_* ones.
 # RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
 
+# Install docs/requirements.txt
+COPY ./docs/requirements.txt /opt/src/docs/requirements.txt
+RUN pip install -r docs/requirements.txt
+
 # Copy code for each package.
 COPY ./rastervision_pipeline/rastervision/pipeline/ /opt/src/rastervision/pipeline/
 COPY ./rastervision_aws_s3/rastervision/aws_s3/ /opt/src/rastervision/aws_s3/
