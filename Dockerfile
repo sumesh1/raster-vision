@@ -33,37 +33,50 @@ ENV GDAL_DATA=/opt/conda/lib/python3.6/site-packages/rasterio/gdal_data/
 WORKDIR /opt/src/
 ENV PYTHONPATH=/opt/src:$PYTHONPATH
 
-# COPY ./rastervision_pipeline/requirements.txt /opt/src/requirements.txt
-# RUN pip install -r requirements.txt
-# COPY ./rastervision_aws_s3/requirements.txt /opt/src/requirements.txt
-# RUN pip install -r requirements.txt
-
 COPY ./requirements-dev.txt /opt/src/requirements-dev.txt
 RUN pip install -r requirements-dev.txt
 
-COPY ./rastervision_pipeline/ /opt/src/rastervision_pipeline/
-RUN cd /opt/src/rastervision_pipeline/ && pip install .
-COPY ./rastervision_aws_s3/ /opt/src/rastervision_aws_s3/
-RUN cd /opt/src/rastervision_aws_s3/ && pip install .
-COPY ./rastervision_aws_batch/ /opt/src/rastervision_aws_batch/
-RUN cd /opt/src/rastervision_aws_batch/ && pip install .
+# Ideally we'd just pip install each package, but if we do that, then a lot of the image
+# will have to be re-built each time we make a change to source code. So, we split the
+# install into installing all the requirements first (filtering out any prefixed with
+# rastervision_*), and then copy over the source code.
 
-COPY ./rastervision_core/ /opt/src/rastervision_core/
-RUN cd /opt/src/rastervision_core/ && pip install .
-
+# Install requirements for each package.
+COPY ./rastervision_pipeline/requirements.txt /opt/src/requirements.txt
+RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
+COPY ./rastervision_aws_s3/requirements.txt /opt/src/requirements.txt
+RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
+COPY ./rastervision_aws_batch/requirements.txt /opt/src/requirements.txt
+RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
+COPY ./rastervision_core/requirements.txt /opt/src/requirements.txt
+RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
 # TODO make a release for this and move into requirements.txt
 RUN pip install git+git://github.com/azavea/mask-to-polygons@f1d0b623c648ba7ccb1839f74201c2b57229b006
+COPY ./rastervision_pytorch_learner/requirements.txt /opt/src/requirements.txt
+RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
+COPY ./rastervision_pytorch_backend/requirements.txt /opt/src/requirements.txt
+# Commented out because there are no dependencies after filtering out rastervision_* ones.
+# RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
+COPY ./rastervision_examples/requirements.txt /opt/src/requirements.txt
+# Commented out because there are no dependencies after filtering out rastervision_* ones.
+# RUN pip install $(grep -ivE "rastervision_*" requirements.txt)
 
-COPY ./rastervision_pytorch_learner/ /opt/src/rastervision_pytorch_learner/
-RUN cd /opt/src/rastervision_pytorch_learner/ && pip install .
-COPY ./rastervision_pytorch_backend/ /opt/src/rastervision_pytorch_backend/
-RUN cd /opt/src/rastervision_pytorch_backend/ && pip install .
-COPY ./rastervision_examples/ /opt/src/rastervision_examples/
-RUN cd /opt/src/rastervision_examples/ && pip install .
+# Copy code for each package.
+COPY ./rastervision_pipeline/rastervision/pipeline/ /opt/src/rastervision/pipeline/
+COPY ./rastervision_aws_s3/rastervision/aws_s3/ /opt/src/rastervision/aws_s3/
+COPY ./rastervision_aws_batch/rastervision/aws_batch/ /opt/src/rastervision/aws_batch/
+COPY ./rastervision_core/rastervision/core/ /opt/src/rastervision/core/
+COPY ./rastervision_pytorch_learner/rastervision/pytorch_learner/ /opt/src/rastervision/pytorch_learner/
+COPY ./rastervision_pytorch_backend/rastervision/pytorch_backend/ /opt/src/rastervision/pytorch_backend/
+COPY ./rastervision_examples/rastervision/examples/ /opt/src/rastervision/examples/
 
 COPY scripts /opt/src/scripts/
+COPY tests /opt/src/tests/
+COPY integration_tests /opt/src/integration_tests/
 
 # Needed for click to work
 ENV LC_ALL C.UTF-8
 ENV LANG C.UTF-8
 ENV PROJ_LIB /opt/conda/share/proj/
+
+CMD ["bash"]

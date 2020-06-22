@@ -1,3 +1,0 @@
-FROM raster-vision-cuda-pip-10.0:latest
-
-CMD ["bash"]

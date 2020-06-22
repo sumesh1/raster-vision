@@ -21,9 +21,5 @@ then
         exit
     fi
 
-    if [ $# -eq 0 -o "${1:-}" = "--pytorch" ]
-    then
-        docker build --build-arg CUDA_VERSION="10.0" -t raster-vision-cuda-pip-10.0 -f Dockerfile .
-        docker build -t raster-vision-pytorch-pip -f Dockerfile-pytorch .
-    fi
+    docker build --build-arg CUDA_VERSION="10.0" -t raster-vision-pytorch -f Dockerfile .
 fi

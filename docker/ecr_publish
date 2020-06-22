@@ -1,6 +1,6 @@
 # Expects RV_ECR_IMAGE env var to be set to <ecr_repo_name>:<tag_name>
 
-IMAGE_NAME="raster-vision-pytorch-pip:latest"
+IMAGE_NAME="raster-vision-pytorch:latest"
 ACCOUNT_ID=$(aws sts get-caller-identity --output text --query 'Account')
 AWS_REGION="us-east-1"
 
