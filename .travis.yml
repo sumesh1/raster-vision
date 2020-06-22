@@ -4,7 +4,7 @@ language:
    - python
 
 install:
-   - echo "skipping install step"
+   - echo "skipping install step because that will be done inside .travis/build"
 
 services:
    - docker
