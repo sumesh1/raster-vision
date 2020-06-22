@@ -38,14 +38,22 @@ ENV PYTHONPATH=/opt/src:$PYTHONPATH
 # COPY ./rastervision_aws_s3/requirements.txt /opt/src/requirements.txt
 # RUN pip install -r requirements.txt
 
+COPY ./requirements-dev.txt /opt/src/requirements-dev.txt
+RUN pip install -r requirements-dev.txt
+
 COPY ./rastervision_pipeline/ /opt/src/rastervision_pipeline/
 RUN cd /opt/src/rastervision_pipeline/ && pip install .
 COPY ./rastervision_aws_s3/ /opt/src/rastervision_aws_s3/
 RUN cd /opt/src/rastervision_aws_s3/ && pip install .
 COPY ./rastervision_aws_batch/ /opt/src/rastervision_aws_batch/
 RUN cd /opt/src/rastervision_aws_batch/ && pip install .
+
 COPY ./rastervision_core/ /opt/src/rastervision_core/
 RUN cd /opt/src/rastervision_core/ && pip install .
+
+# TODO make a release for this and move into requirements.txt
+RUN pip install git+git://github.com/azavea/mask-to-polygons@f1d0b623c648ba7ccb1839f74201c2b57229b006
+
 COPY ./rastervision_pytorch_learner/ /opt/src/rastervision_pytorch_learner/
 RUN cd /opt/src/rastervision_pytorch_learner/ && pip install .
 COPY ./rastervision_pytorch_backend/ /opt/src/rastervision_pytorch_backend/
